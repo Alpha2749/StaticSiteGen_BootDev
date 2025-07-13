@@ -1,5 +1,8 @@
 from textnode import TextNode, TextType
 from htmlnode import HTMLNode, LeafNode, ParentNode
+import os
+import shutil
+from functions import copy_files_recursive
 
 def text_node_to_html_node(text_node):
     match text_node.text_type:
@@ -18,10 +21,17 @@ def text_node_to_html_node(text_node):
         case _:
             raise Exception("Invalid node type")
         
+dir_path_static = "./static"
+dir_path_public = "./public"
 
 
 def main():
-    test_obj = TextNode("This is some anchor text", "link", "https://www.boot.dev")
-    print(test_obj)
+    print("Deleting public directory...")
+    if os.path.exists(dir_path_public):
+        shutil.rmtree(dir_path_public)
+
+    print("Copying static files to public directory...")
+    copy_files_recursive(dir_path_static, dir_path_public)
+
 
 main()
