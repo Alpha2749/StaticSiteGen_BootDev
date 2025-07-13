@@ -10,6 +10,7 @@ from functions import (
     block_to_block_type,
     BlockType,
     markdown_to_html_node,
+    extract_title,
 )
 
 from textnode import TextNode, TextType
@@ -327,6 +328,35 @@ the **same** even with inline stuff
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
 
+    def test_extract_title_basic(self):
+        md = "# My Title\nSome content here."
+        self.assertEqual(extract_title(md), "My Title")
+
+    def test_extract_title_with_leading_spaces(self):
+        md = "   # Not a title\n# Real Title\nContent"
+        self.assertEqual(extract_title(md), "Real Title")
+
+    def test_extract_title_multiple_headers(self):
+        md = "# First Title\n## Subtitle\n# Second Title"
+        self.assertEqual(extract_title(md), "First Title")
+
+    def test_extract_title_header_not_first_line(self):
+        md = "\n\n# Title After Blank\nContent"
+        self.assertEqual(extract_title(md), "Title After Blank")
+
+    def test_extract_title_no_h1_raises(self):
+        md = "## Subtitle\nContent"
+        with self.assertRaises(Exception) as context:
+            extract_title(md)
+        self.assertEqual(str(context.exception), "No h1 header found in markdown")
+
+    def test_extract_title_h1_with_trailing_spaces(self):
+        md = "#    Title With Spaces    \nContent"
+        self.assertEqual(extract_title(md), "Title With Spaces")
+
+    def test_extract_title_h1_with_special_chars(self):
+        md = "# Title! @ #$%^&*()\nContent"
+        self.assertEqual(extract_title(md), "Title! @ #$%^&*()")
 
 
 
