@@ -281,3 +281,4 @@ def generate_page(from_path, template_path, dest_path, basepath):
         os.makedirs(dest_dir_path, exist_ok=True)
     to_file = open(dest_path, "w")
     to_file.write(template)
+    print("test")
